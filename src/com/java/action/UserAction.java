@@ -72,6 +72,11 @@ public class UserAction extends ActionSupport {
 	DbUtil dbUtil=new DbUtil();
 	UserDao userDao=new UserDao();
 
+	/**
+	 * 展示
+	 * @return
+	 * @throws Exception
+	 */
 	public String list()throws Exception{
 		Connection con=null;
 		PageBean pageBean=new PageBean(Integer.parseInt(page),Integer.parseInt(rows));
@@ -96,6 +101,11 @@ public class UserAction extends ActionSupport {
 		return null;
 	}
 
+	/**
+	 * 添加
+	 * @return
+	 * @throws Exception
+	 */
 	public String save()throws Exception{
 		if(StringUtil.isNotEmpty(id)){
 			user.setId(Integer.parseInt(id));
@@ -130,6 +140,11 @@ public class UserAction extends ActionSupport {
 		return null;
 	}
 
+	/**
+	 * 删除数据
+	 * @return
+	 * @throws Exception
+	 */
 	public String delete()throws Exception{
 		Connection con=null;
 		try {
@@ -181,7 +196,31 @@ public class UserAction extends ActionSupport {
 		return null;
 	}
 
+	/**
+	 * 用模板导出后台
+	 * @return
+	 * @throws Exception
+	 */
+	public String export2() throws  Exception{
+		Connection con=null;
+		try {
+			con = dbUtil.getCon();
+			ResultSet rs=userDao.userList(con, null);
+			Workbook wb = ExcelUtil.fillExcelDataWithTemplate(userDao.userList(con, null), "userExporTemplate.xls");
+			ResponseUtil.export(ServletActionContext.getResponse(), wb, "模板导出excel.xls");
 
+		}catch (Exception e){
+			e.printStackTrace();
+		}finally {
+			try {
+			dbUtil.closeCon(con);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+
+		}
+		return null;
+	}
 
 
 
